@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xing.auth.mapper.SysUserMapper">
+
+    <sql id="sysUserColumns">
+        id, username, password, name, phone, head_url, dept_id, post_id, open_id, description, status, create_time, update_time
+    </sql>
+
+    <select id="getSysUserPage" resultType="com.xing.system.bo.SysUserBO">
+        select <include refid="sysUserColumns" />
+        from sys_user
+        <where>
+            is_deleted = 0
+            <if test="sysUserQO.keyword != null">
+                and username like CONCAT('%',#{sysUserQO.keyword},'%')
+            </if>
+            <if test="sysUserQO.createTimeBegin != null">
+                and create_time <![CDATA[ >= ]]> #{sysUserQO.createTimeBegin}
+            </if>
+            <if test="sysUserQO.createTimeEnd != null">
+                and create_time <![CDATA[ <= ]]> #{sysUserQO.createTimeEnd}
+            </if>
+        </where>
+    </select>
+</mapper>

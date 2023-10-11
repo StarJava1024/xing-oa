@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xing.auth.mapper.SysMenuMapper">
+
+    <resultMap id="sysMenuMap"
+               type="com.xing.system.model.SysMenu" autoMapping="true">
+    </resultMap>
+
+    <sql id="sysMenuColumn">
+        id, parent_id, name, type, route AS path, component, perms, icon, sort_value, status, create_time, update_time, is_deleted
+    </sql>
+    <sql id="sysMenuColumns">
+        sm.id, sm.parent_id, sm.name, sm.type, sm.route AS path, sm.component, sm.perms, sm.icon, sm.sort_value, sm.status, sm.create_time, sm.update_time, sm.is_deleted
+    </sql>
+
+    <!-- Integer deleteMenuById(@Param("id") String id); -->
+    <update id="deleteMenuById">
+        UPDATE sys_menu SET is_deleted=1
+        WHERE is_deleted=0 AND id = #{id};
+    </update>
+
+    <!-- List<SysMenu> getMenusByUserId(@Param("userId") String userId); -->
+    <select id="getMenusByUserId" resultType="com.xing.system.model.SysMenu">
+    <!-- <select id="getMenusByUserId" resultMap="sysMenuMap"> -->
+        SELECT DISTINCT <include refid="sysMenuColumns" />
+        FROM sys_menu sm LEFT JOIN sys_role_menu srm ON sm.id = srm.menu_id
+                         LEFT JOIN sys_user_role sur ON srm.role_id = sur.role_id
+        WHERE sur.user_id = #{userId} AND sur.is_deleted=0 AND srm.is_deleted=0
+          AND sm.is_deleted=0 AND sm.status=1
+        ORDER BY sm.sort_value;
+    </select>
+
+</mapper>

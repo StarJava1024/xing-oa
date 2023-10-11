@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xing.auth.mapper.SysRoleMapper">
+
+    <sql id="sysRoleColumn">
+        id ,
+        role_name ,
+        role_code ,
+        description ,
+        create_time ,
+        update_time
+    </sql>
+    <sql id="sysRoleColumns">
+        sr.id ,
+        sr.role_name ,
+        sr.role_code ,
+        sr.description ,
+        sr.create_time ,
+        sr.update_time
+    </sql>
+
+    <!-- IPage<SysRole> getSysRolePage(IPage<SysRole> page, SysRoleQO sysRoleQO); -->
+    <select id="getSysRolePage" resultType="com.xing.system.model.SysRole">
+        select <include refid="sysRoleColumn" />
+        from sys_role
+        <where>
+            is_deleted = 0
+            <if test="sysRoleQO.roleName != null">
+                and role_name like CONCAT('%',#{sysRoleQO.roleName},'%')
+            </if>
+        </where>
+    </select>
+
+</mapper>
